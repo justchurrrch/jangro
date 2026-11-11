@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>장로까지 키우기</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--k:#1b1b1b;--red:#e8463a;--yel:#f7d84a;--teal:#2a9d9a;--mint:#d7ecea;--paper:#fffdf7;
+        --wob:255px 18px 225px 18px/18px 225px 18px 255px;--wob2:18px 225px 18px 255px/255px 18px 225px 18px;--wobB:22px 30px 20px 32px/30px 20px 32px 22px}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  body{margin:0;font-family:'Gaegu',sans-serif;font-weight:700;color:var(--k);background:var(--paper);min-height:100vh;display:flex;justify-content:center;
+       background-image:radial-gradient(#e9e3d6 1.2px,transparent 1.3px);background-size:18px 18px}
+  .app{width:100%;max-width:440px;padding:14px 14px 24px}
+  header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .logo{width:56px;height:56px;border-radius:var(--wob);background:#fff;border:3px solid var(--k);box-shadow:3px 3px 0 var(--k);display:flex;align-items:center;justify-content:center}
+  .logo svg{width:40px;height:40px}
+  h1{font-size:30px;margin:0;line-height:1}
+  .sub{font-size:14px;color:#6a6a6a;font-weight:400}
+  .help{margin-left:auto;width:44px;height:44px;border-radius:50%;border:3px solid var(--k);background:var(--yel);font-family:'Gaegu';font-weight:700;font-size:24px;color:var(--k);box-shadow:2px 2px 0 var(--k)}
+  .shell{background:var(--mint);border-radius:var(--wobB);padding:14px 14px 18px;border:3px solid var(--k);box-shadow:5px 5px 0 var(--k)}
+  .shell .top{display:flex;justify-content:space-between;align-items:center;font-size:15px;padding:0 6px 10px}
+  .stamp{background:var(--red);color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;text-align:center;border:2px solid var(--k);transform:rotate(-12deg)}
+  .screen{background:#fff;border-radius:var(--wobB);overflow:hidden;border:3px solid var(--k)}
+  .info{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:3px dashed var(--k)}
+  .lv{background:var(--teal);color:#fff;border:2.5px solid var(--k);border-radius:var(--wob);padding:3px 9px;font-size:18px}
+  .nm{font-size:24px;line-height:1}
+  .nm small{display:block;font-size:14px;color:#777;font-weight:400}
+  .pts{margin-left:auto;text-align:right;font-size:13px;color:#777}
+  .pts b{display:inline-block;font-size:28px;color:var(--k);line-height:1;transform-origin:right center}
+  .scene{height:290px;position:relative;overflow:hidden;background-image:radial-gradient(rgba(0,0,0,.07) 1.5px,transparent 1.6px);background-size:16px 16px}
+  .place{position:absolute;top:10px;left:10px;background:#fff;border:2.5px solid var(--k);border-radius:var(--wob);padding:2px 12px;font-size:18px;z-index:2;box-shadow:2px 2px 0 var(--k)}
+  .deco{position:absolute;width:38px;height:38px}
+  .deco svg{width:100%;height:100%;overflow:visible}
+  .hero{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:150px;height:216px;cursor:pointer;z-index:1}
+  .hero svg{width:100%;height:100%;display:block;overflow:visible}
+  .hero.tap{animation:tap .18s}
+  .hero.shake{animation:shake .12s infinite}
+  .hero.glow{animation:glow 1s}
+  .hero.sad{animation:sad .8s}
+  @keyframes tap{50%{transform:translate(-50%,-50%) scale(.9,1.06)}}
+  @keyframes shake{0%,100%{transform:translate(-50%,-50%) rotate(-6deg)}50%{transform:translate(-50%,-50%) rotate(6deg)}}
+  @keyframes glow{50%{transform:translate(-50%,-50%) scale(1.2) rotate(-4deg)}}
+  @keyframes sad{30%{transform:translate(-50%,-30%) scale(.7) rotate(12deg);opacity:.4}}
+  .caption{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:#fff;border:2.5px solid var(--k);border-radius:var(--wob);padding:3px 14px;font-size:18px;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;z-index:2;box-shadow:2px 2px 0 var(--k)}
+  .float{position:absolute;font-size:24px;color:var(--red);-webkit-text-stroke:.6px var(--k);animation:up .9s forwards;pointer-events:none;z-index:3;white-space:nowrap}
+  @keyframes up{to{transform:translateY(-70px) rotate(-6deg);opacity:0}}
+  .verse{position:absolute;inset:0;background:var(--paper);z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 22px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s;
+         background-image:linear-gradient(transparent 31px,#cfe6e4 32px);background-size:100% 32px}
+  .verse.on{opacity:1;pointer-events:auto}
+  .verse .vi svg{width:54px;height:44px}
+  .verse .vt{font-size:21px;line-height:1.5;margin-top:4px}
+  .verse .vr{color:var(--teal);margin-top:8px;font-size:18px}
+  .verse .vb{width:70%;height:9px;background:#fff;border:2px solid var(--k);border-radius:9px;margin-top:12px;overflow:hidden}
+  .verse .vb i{display:block;height:100%;background:var(--yel);width:100%}
+  .slipbox{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:#2a1d22;color:#fff;opacity:0;pointer-events:none;transition:opacity .25s;
+           background-image:radial-gradient(rgba(232,70,58,.35) 2px,transparent 2.2px);background-size:18px 18px}
+  .slipbox.on{opacity:1;animation:quake .35s}
+  @keyframes quake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .slipbox .si svg{width:70px;height:70px}
+  .slipbox .sw{font-size:19px;color:#f6c7c2;margin-top:4px;font-weight:400}
+  .slipbox .st{font-size:23px;white-space:nowrap;margin-top:8px;background:var(--red);border:2.5px solid #fff;border-radius:var(--wob);padding:0 12px}
+  .slipbox .sl{font-size:30px;color:var(--yel);margin-top:6px}
+  .evo{padding:10px 12px 12px;border-top:3px dashed var(--k)}
+  .evo .row{display:flex;justify-content:space-between;font-size:18px}
+  .evo .row span:first-child{color:var(--teal)}
+  .bar{height:16px;border-radius:var(--wob);background:#fff;margin:6px 0;overflow:hidden;border:2.5px solid var(--k)}
+  .bar i{display:block;height:100%;transition:width .25s;border-right:2.5px solid var(--k);
+         background:repeating-linear-gradient(-45deg,var(--yel) 0 8px,#fbe78d 8px 16px);background-size:22.6px 22.6px;animation:stripe .8s linear infinite}
+  @keyframes stripe{to{background-position:22.6px 0}}
+  .evo .meta{font-size:15px;color:#666;display:flex;justify-content:space-between;font-weight:400}
+  .controls{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .bible{width:88px;height:88px;border-radius:50%;border:3px solid var(--k);background:var(--teal);color:#fff;font-family:'Gaegu';font-weight:700;font-size:17px;box-shadow:3px 4px 0 var(--k);cursor:pointer;line-height:1}
+  .bible svg{display:block;width:40px;height:32px;margin:0 auto 2px;animation:flip 3.5s ease-in-out infinite}
+  @keyframes flip{0%,80%,100%{transform:rotateY(0)}90%{transform:rotateY(180deg)}}
+  .bible:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--k)}
+  .bible:disabled{opacity:.5}
+  .touch{flex:1;font-family:'Gaegu';font-weight:700;font-size:32px;color:#fff;background:var(--red);border:3px solid var(--k);border-radius:var(--wob);padding:14px 0;box-shadow:4px 5px 0 var(--k);cursor:pointer;text-shadow:2px 2px 0 var(--k);animation:bounce 1.6s ease-in-out infinite}
+  @keyframes bounce{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.5deg) scale(1.02)}}
+  .touch:active{animation:none;transform:translate(3px,4px);box-shadow:1px 1px 0 var(--k)}
+  .touch:disabled{opacity:.55;animation:none}
+  .hint{text-align:center;font-size:15px;color:#555;margin-top:10px;font-weight:400}
+  .rec{display:flex;justify-content:space-around;margin-top:16px;font-size:15px;color:#666;text-align:center;font-weight:400}
+  .rec>div{background:#fff;border:2.5px solid var(--k);border-radius:var(--wob);padding:4px 10px;box-shadow:2px 2px 0 var(--k)}
+  .rec b{display:block;font-size:20px;color:var(--k);font-weight:700}
+  .modal{position:fixed;inset:0;background:rgba(27,27,27,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:9}
+  .modal.on{display:flex}
+  .box{background:#fff;border:3px solid var(--k);border-radius:var(--wobB);box-shadow:6px 6px 0 var(--k);padding:20px;max-width:360px;width:100%;text-align:center;animation:pop .35s cubic-bezier(.3,1.6,.6,1)}
+  @keyframes pop{from{transform:scale(.6) rotate(-6deg);opacity:0}}
+  .mini{width:104px;height:150px;margin:0 auto}.mini svg{width:100%;height:100%;overflow:visible}
+  .big svg{width:80px;height:80px}
+  .ribbon{display:inline-block;background:var(--yel);border:3px solid var(--k);padding:2px 22px;font-size:28px;margin:8px 0 4px;transform:rotate(-3deg);
+          clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%)}
+  .ribbon.r{background:var(--red);color:#fff}
+  .box p{line-height:1.45;margin:8px 0;font-size:19px;font-weight:400}
+  .box p b{font-weight:700}
+  .qv{background:var(--paper);border:2px dashed var(--k);border-radius:10px;padding:8px 12px;text-align:left;font-size:17px;margin:10px 0;font-weight:400}
+  .ok{font-family:'Gaegu';font-weight:700;font-size:24px;border:3px solid var(--k);border-radius:var(--wob);background:var(--red);color:#fff;padding:8px;width:100%;box-shadow:3px 4px 0 var(--k);margin-top:8px}
+  .chance{display:inline-block;background:var(--mint);border:2px solid var(--k);border-radius:10px;padding:1px 10px;font-size:17px}
+
+  .beads{display:flex;gap:7px;justify-content:center;margin-top:16px}
+  .beads i{width:24px;height:24px;border-radius:50%;border:2.5px solid var(--k);background:#fff;box-shadow:1px 2px 0 var(--k)}
+  .beads i.on{background:var(--yel);animation:beadpop .3s}
+  .beads.full i{background:var(--red);animation:beadglow .6s ease-in-out infinite alternate}
+  @keyframes beadpop{50%{transform:scale(1.35) rotate(-10deg)}}
+  @keyframes beadglow{to{transform:translateY(-3px)}}
+  .touch.pray{background:var(--yel);color:var(--k);text-shadow:none}
+  .touch.ready{animation:ready .45s ease-in-out infinite alternate}
+  @keyframes ready{from{transform:rotate(-2deg) scale(1)}to{transform:rotate(2deg) scale(1.05)}}
+  .touch small{font-size:18px}
+  /* ===== 애니메이션 ===== */
+  .logo{animation:wig 3.5s ease-in-out infinite}
+  @keyframes wig{0%,30%,100%{transform:rotate(0)}10%{transform:rotate(-12deg)}20%{transform:rotate(10deg)}}
+  .stamp{animation:stampy 2.4s ease-in-out infinite}
+  @keyframes stampy{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(-4deg) scale(1.08)}}
+  .hero svg{animation:bob 2.6s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes bob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-7px) scale(1.015,.99)}}
+  .hero .eyes{animation:eyeblink 4s infinite;transform-box:fill-box;transform-origin:center}
+  @keyframes eyeblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .hero .armL{animation:wave 2.6s ease-in-out infinite;transform-box:view-box;transform-origin:30px 112px}
+  .hero .armR{animation:wave 2.6s ease-in-out infinite reverse;transform-box:view-box;transform-origin:90px 112px}
+  @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(5deg)}}
+  .deco{animation:floaty 3.2s ease-in-out infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-10px) rotate(8deg)}}
+  .dots{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .dots i{position:absolute;bottom:-20px;font-style:normal;animation:rise linear infinite}
+  @keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:1}100%{transform:translateY(-320px) rotate(180deg);opacity:0}}
+  .scene.enter{animation:enter .7s ease-out}
+  @keyframes enter{0%{transform:scale(1.15) rotate(-3deg);filter:brightness(1.6)}60%{transform:scale(.98) rotate(1deg)}100%{transform:none;filter:none}}
+  .coin{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--yel);border:2.5px solid var(--k);font-size:15px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3;animation:coin .9s cubic-bezier(.2,.6,.4,1) forwards}
+  @keyframes coin{0%{transform:translate(0,0) rotate(0) scale(.5);opacity:1}40%{transform:translate(calc(var(--dx)*.6),-85px) rotate(200deg) scale(1.05)}100%{transform:translate(var(--dx),50px) rotate(400deg) scale(.8);opacity:0}}
+  .pts b.pop{animation:pp .25s}
+  @keyframes pp{50%{transform:scale(1.25) rotate(-4deg);color:var(--red)}}
+  .caption.new{animation:capIn .3s ease-out}
+  @keyframes capIn{from{transform:translate(-50%,12px) rotate(-3deg);opacity:0}}
+  .place{animation:sway 4s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  .confetti{position:fixed;top:-20px;width:11px;height:15px;border:2px solid var(--k);border-radius:3px;z-index:10;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(115vh) rotate(800deg)}}
+  .verse.on .vi{animation:bob 1.6s ease-in-out infinite}
+  .slipbox .si{animation:devil .5s ease-in-out infinite alternate}
+  @keyframes devil{from{transform:rotate(-10deg) scale(1)}to{transform:rotate(10deg) scale(1.15)}}
+  .box .mini svg,.box .big svg{animation:bob 1.4s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo" id="logo"></div>
+    <div><h1>장로까지 키우기</h1><div class="sub">새가족부터 장로까지 · 터치해서 헌금!</div></div>
+    <button class="help" id="help">?</button>
+  </header>
+  <div class="shell">
+    <div class="top"><span>✦ 교회 생활 다이어리 ✦</span><span class="stamp">헌금<br>GO!</span></div>
+    <div class="screen">
+      <div class="info">
+        <span class="lv" id="lv">LV.1</span>
+        <div class="nm" id="nm"></div>
+        <div class="pts">MY 헌금<br><b id="pts">0</b></div>
+      </div>
+      <div class="scene" id="scene">
+        <div class="dots" id="dots"></div>
+        <span class="place" id="place"></span><div id="decos"></div>
+        <div class="hero" id="hero"></div>
+        <div class="caption" id="cap"></div>
+        <div class="slipbox" id="slip"><div class="si" id="devil"></div><div class="sw" id="sWhisper"></div><div class="st">사탄의 속삭임에 넘어갔다!</div><div class="sl" id="sLoss"></div></div>
+        <div class="verse" id="verse"><div class="vi" id="vIcon"></div><div class="vt" id="vText"></div><div class="vr" id="vRef"></div><div class="vb"><i id="vBar"></i></div></div>
+      </div>
+      <div class="evo">
+        <div class="row"><span>성장 게이지</span><span id="need"></span></div>
+        <div class="bar"><i id="bar"></i></div>
+        <div class="meta"><span id="stg"></span><span id="rate"></span></div>
+      </div>
+    </div>
+    <div class="beads" id="beads"></div>
+    <div class="controls">
+      <button class="bible" id="bible"><span id="bIcon"></span>성경 읽기</button>
+      <button class="touch" id="touch">기도하기</button>
+    </div>
+    <div class="hint">기도 7번 → 헌금 1번 · 다 차면 자동 승급!</div>
+  </div>
+  <div class="rec">
+    <div>최고 직분<b id="best">-</b></div>
+    <div>도루묵<b id="fails">0</b></div>
+    <div>실족<b id="slips">0</b></div>
+    <div>장립<b id="clears">0</b></div>
+  </div>
+</div>
+<div class="modal" id="modal"><div class="box" id="box"></div></div>
+
+<script>
+const K="#1b1b1b",RED="#e8463a",YEL="#f7d84a",TEAL="#2a9d9a",W="#ffffff";
+let fid=0;
+function wobble(){const id="w"+(fid++);return [id,`<filter id="${id}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="${fid%7+1}"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>`]}
+
+// ── 손그림 낙서 소품 ──
+function doodle(t,c){
+ const sw=`stroke="${K}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`;
+ let s="";
+ if(t==="spark")s=`<path d="M18 2 Q20 16 34 18 Q20 20 18 34 Q16 20 2 18 Q16 16 18 2Z" fill="${c}" ${sw}/>`;
+ if(t==="heart")s=`<path d="M18 32 C3 22 3 9 11 7 C15 6 18 9 18 12 C18 9 21 6 25 7 C33 9 33 22 18 32Z" fill="${c}" ${sw}/>`;
+ if(t==="note")s=`<ellipse cx="12" cy="27" rx="6.5" ry="5" fill="${c}" ${sw}/><path d="M18 27 V5 Q27 8 29 16" fill="none" ${sw}/>`;
+ if(t==="star")s=`<path d="M18 3 L22 13 L33 14 L25 21 L27 32 L18 26 L9 32 L11 21 L3 14 L14 13Z" fill="${c}" ${sw}/>`;
+ if(t==="flower")s=[0,72,144,216,288].map(a=>`<circle cx="${18+9*Math.cos(a*Math.PI/180)}" cy="${18+9*Math.sin(a*Math.PI/180)}" r="7" fill="${c}" ${sw}/>`).join("")+`<circle cx="18" cy="18" r="5.5" fill="${YEL}" ${sw}/>`;
+ if(t==="moon")s=`<path d="M24 4 A15 15 0 1 0 33 25 A11 11 0 1 1 24 4Z" fill="${c}" ${sw}/>`;
+ if(t==="cup")s=`<path d="M6 14 H26 V26 Q26 32 20 32 H12 Q6 32 6 26Z" fill="${c}" ${sw}/><path d="M26 17 Q33 17 32 22 Q31 26 26 25" fill="none" ${sw}/><path d="M12 10 Q10 6 13 3 M19 10 Q17 6 20 3" fill="none" ${sw}/>`;
+ if(t==="cross")s=`<path d="M14 3 H22 V11 H31 V19 H22 V34 H14 V19 H5 V11 H14Z" fill="${c}" ${sw}/>`;
+ if(t==="bowl")s=`<path d="M4 17 H32 Q31 32 18 32 Q5 32 4 17Z" fill="${c}" ${sw}/><path d="M7 17 Q8 8 18 8 Q28 8 29 17" fill="${W}" ${sw}/>`;
+ if(t==="candle")s=`<rect x="12" y="14" width="12" height="19" rx="2" fill="${c}" ${sw}/><path d="M18 3 Q24 9 18 13 Q12 9 18 3Z" fill="${YEL}" ${sw}/>`;
+ return `<svg viewBox="0 0 36 36">${s}</svg>`;
+}
+function churchSVG(){
+ const sw=`stroke="${K}" stroke-width="2.5" stroke-linejoin="round"`;
+ return `<svg viewBox="0 0 40 40"><path d="M20 2 V9 M16.5 5 H23.5" stroke="${K}" stroke-width="2.5" stroke-linecap="round"/><path d="M11 18 L20 9 L29 18 V36 H11Z" fill="${W}" ${sw}/><path d="M4 24 L11 18 V36 H4Z M36 24 L29 18 V36 H36Z" fill="${TEAL}" ${sw}/><path d="M16 36 V28 Q20 24 24 28 V36" fill="${RED}" ${sw}/><circle cx="20" cy="19" r="3" fill="${YEL}" ${sw}/></svg>`;
+}
+function bookSVG(){
+ const sw=`stroke="${K}" stroke-width="2.5" stroke-linejoin="round"`;
+ return `<svg viewBox="0 0 50 40"><path d="M25 8 Q14 2 3 6 V34 Q14 30 25 36 Z" fill="${W}" ${sw}/><path d="M25 8 Q36 2 47 6 V34 Q36 30 25 36 Z" fill="${W}" ${sw}/><path d="M12 13 V25 M8 17 H16" stroke="${RED}" stroke-width="2.5" stroke-linecap="round"/><path d="M31 13 H41 M31 19 H41 M31 25 H38" stroke="${K}" stroke-width="2" stroke-linecap="round"/></svg>`;
+}
+function devilSVG(){
+ const sw=`stroke="${K}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+ return `<svg viewBox="0 0 70 70"><path d="M14 22 L8 4 L26 14Z M56 22 L62 4 L44 14Z" fill="${RED}" ${sw}/><circle cx="35" cy="38" r="25" fill="${RED}" ${sw}/><path d="M20 30 L30 35 M50 30 L40 35" ${sw}/><circle cx="27" cy="39" r="3.5" fill="${K}"/><circle cx="43" cy="39" r="3.5" fill="${K}"/><path d="M22 47 Q35 60 48 47 Q35 52 22 47Z" fill="${W}" ${sw}/></svg>`;
+}
+
+// ── 직분별 일상 복장 캐릭터 (손그림 스타일) ──
+const OUTFIT=[
+ {top:'tee',main:YEL,pants:TEAL,hair:'#7a5236'},
+ {top:'shirt',main:W,pants:'#e8d6a8',hair:'#7a5236'},
+ {top:'cardigan',main:TEAL,pants:'#6b6b70',hair:'#7a5236'},
+ {top:'suit',main:'#a7afb8',pants:'#8f97a1',tie:RED,hair:'#7a5236'},
+ {top:'suit',main:'#2b3a5c',pants:'#24304c',tie:RED,hair:'#d6d1cb'}
+];
+function avatar(r){
+ const o=OUTFIT[r],skin='#fff6ec';
+ const sw=`stroke="${K}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+ const thin=`stroke="${K}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"`;
+ const [fidName,filt]=wobble();
+ let s="";
+ // 다리·신발
+ s+=`<path d="M38 150 V194 H56 V150Z M64 150 V194 H82 V150Z" fill="${o.pants}" ${sw}/>`;
+ s+=`<path d="M34 199 Q34 191 47 191 Q58 191 58 199Z M62 199 Q62 191 73 191 Q86 191 86 199Z" fill="${K}" ${sw}/>`;
+ // 팔
+ const arm=o.top==='tee'?skin:o.main;
+ for(const [cls,d,sl,h] of [['armL','M30 112 Q17 132 19 154','M30 112 Q23 121 22 129',19],['armR','M90 112 Q103 132 101 154','M90 112 Q97 121 98 129',101]]){
+  s+=`<g class="${cls}"><path d="${d}" stroke="${K}" stroke-width="19" stroke-linecap="round" fill="none"/><path d="${d}" stroke="${arm}" stroke-width="13" stroke-linecap="round" fill="none"/>`;
+  if(o.top==='tee')s+=`<path d="${sl}" stroke="${K}" stroke-width="19" stroke-linecap="round" fill="none"/><path d="${sl}" stroke="${o.main}" stroke-width="13" stroke-linecap="round" fill="none"/>`;
+  s+=`<circle cx="${h}" cy="159" r="7.5" fill="${skin}" ${sw}/></g>`;
+ }
+ // 몸통
+ const body='M26 160 Q24 104 60 98 Q96 104 94 160 Z';
+ s+=`<path d="${body}" fill="${o.main}" ${sw}/>`;
+ if(o.top==='tee'){
+  s+=`<path d="M49 99 Q60 111 71 99" fill="${skin}" ${thin}/><path d="M44 132 L48 128 L52 132 M66 140 L70 136" fill="none" ${thin}/>`;
+ }else if(o.top==='shirt'){
+  s+=`<path d="M60 108 V158" ${thin}/><path d="M50 98 L60 110 L49 114 L45 101Z M70 98 L60 110 L71 114 L75 101Z" fill="${W}" ${thin}/>`;
+  s+=`<circle cx="64" cy="124" r="1.8" fill="${K}"/><circle cx="64" cy="138" r="1.8" fill="${K}"/><path d="M38 128 H46 V136" fill="none" ${thin}/>`;
+ }else if(o.top==='cardigan'){
+  s+=`<path d="M49 99 L60 156 L71 99Z" fill="${W}" ${thin}/><path d="M51 98 L60 109 L51 113 L47 101Z M69 98 L60 109 L69 113 L73 101Z" fill="${W}" ${thin}/>`;
+  s+=`<circle cx="56" cy="128" r="2.4" fill="${YEL}" ${thin}/><circle cx="57.5" cy="143" r="2.4" fill="${YEL}" ${thin}/>`;
+ }else{
+  s+=`<path d="M48 99 L60 138 L72 99Z" fill="${W}" ${thin}/><path d="M57 105 H63 L65 126 L60 133 L55 126Z" fill="${o.tie}" ${thin}/>`;
+  s+=`<path d="M48 99 L60 138 L52 116 L43 105Z M72 99 L60 138 L68 116 L77 105Z" fill="${o.main}" ${thin}/><circle cx="60" cy="148" r="2.2" fill="${K}"/>`;
+  if(r===4)s+=`<path d="M73 112 l2 -6 l2 6 l6 1 l-5 3 l1 6 l-4 -3 l-4 3 l1 -6 l-5 -3Z" fill="${YEL}" ${thin}/>`;
+ }
+ // 얼굴
+ s+=`<path d="M54 88 V100 M66 88 V100" ${sw}/><rect x="54" y="88" width="12" height="11" fill="${skin}"/>`;
+ s+=`<g transform="translate(0,9)">`;
+ s+=`<ellipse cx="33" cy="60" rx="6" ry="8" fill="${skin}" ${sw}/><ellipse cx="87" cy="60" rx="6" ry="8" fill="${skin}" ${sw}/>`;
+ s+=`<path d="M33 56 Q32 26 60 25 Q89 26 87 56 Q88 84 60 87 Q33 84 33 56Z" fill="${skin}" ${sw}/>`;
+ s+=`<path d="M31 56 Q26 22 58 19 Q92 18 89 54 Q86 42 78 38 Q70 46 54 40 Q46 48 36 44 Q32 50 31 56Z" fill="${o.hair}" ${sw}/>`;
+ if(r===4)s+=`<path d="M41 49 Q46 46 51 49 M69 49 Q74 46 79 49" fill="none" ${thin}/>`;
+ s+=`<g class="eyes"><ellipse cx="48" cy="60" rx="3.6" ry="4.4" fill="${K}"/><ellipse cx="72" cy="60" rx="3.6" ry="4.4" fill="${K}"/></g>`;
+ s+=`<path d="M39 69 l5 -2 M41 72 l5 -2 M74 67 l5 2 M74 70 l5 2" stroke="${RED}" stroke-width="2" stroke-linecap="round"/>`;
+ s+=`<path d="M53 71 Q60 79 67 71" fill="none" ${sw}/></g>`;
+ return `<svg viewBox="0 0 120 210" xmlns="http://www.w3.org/2000/svg"><defs>${filt}</defs><g filter="url(#${fidName})">${s}</g></svg>`;
+}
+
+const ST=[
+ {name:"새가족",place:"새가족실",need:10000,rate:.6,bg:"#fde4de",deco:["flower|7%|22%|"+RED,"heart|84%|20%|"+RED,"cup|82%|68%|"+W,"spark|9%|66%|"+YEL],
+  lines:["새가족 환영 꽃다발을 받았어요","주보를 꼼꼼히 읽어요","등록 카드를 작성했어요","새가족 교육을 들어요"]},
+ {name:"일반성도",place:"구역 예배",need:15000,rate:.45,bg:"#dff0ee",deco:["bowl|8%|66%|"+W,"cup|84%|68%|"+YEL,"heart|83%|18%|"+YEL,"spark|9%|22%|"+TEAL],
+  lines:["구역 식구들과 식사해요","주일 예배 개근 중!","큐티를 시작했어요","헌금 봉투에 이름을 적었어요"]},
+ {name:"집사",place:"찬양대석",need:20000,rate:.3,bg:"#fdf1c4",deco:["note|9%|22%|"+TEAL,"note|84%|20%|"+RED,"star|82%|66%|"+YEL,"spark|8%|66%|"+W],
+  lines:["찬양대 연습에 왔어요","주차 봉사를 해요","새가족을 안내해요","주방 봉사로 국수를 말아요"]},
+ {name:"안수집사",place:"새벽기도회",need:30000,rate:.2,bg:"#3e4b78",deco:["moon|83%|14%|"+YEL,"star|8%|22%|"+YEL,"candle|8%|64%|"+W,"spark|84%|64%|"+W],
+  lines:["새벽 5시 기도회 출석!","교회 살림을 꼼꼼히 챙겨요","성도 심방을 다녀왔어요","구역장을 맡았어요"]},
+ {name:"장로",place:"장로 장립식",need:0,rate:0,bg:"#e4eefb",deco:["cross|46%|5%|"+YEL,"flower|7%|64%|"+RED,"flower|84%|64%|"+YEL,"heart|10%|20%|"+RED,"spark|84%|20%|"+YEL],lines:["장로 장립을 축하해요!"]}
+];
+
+// 성경 말씀 (개역한글)
+const VERSES=[
+ ['하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이니라','요한복음 3:16'],
+ ['여호와는 나의 목자시니 내가 부족함이 없으리로다','시편 23:1'],
+ ['내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라','빌립보서 4:13'],
+ ['항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라','데살로니가전서 5:16-18'],
+ ['각각 그 마음에 정한대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라','고린도후서 9:7'],
+ ['너는 마음을 다하여 여호와를 의뢰하고 네 명철을 의지하지 말라','잠언 3:5'],
+ ['수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라','마태복음 11:28'],
+ ['주의 말씀은 내 발에 등이요 내 길에 빛이니이다','시편 119:105'],
+ ['너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라','마태복음 6:33'],
+ ['그런즉 믿음, 소망, 사랑, 이 세가지는 항상 있을 것인데 그 중에 제일은 사랑이라','고린도전서 13:13'],
+ ['믿음은 바라는 것들의 실상이요 보지 못하는 것들의 증거니','히브리서 11:1'],
+ ['하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라','시편 46:1'],
+ ['우리가 알거니와 하나님을 사랑하는 자 곧 그 뜻대로 부르심을 입은 자들에게는 모든 것이 합력하여 선을 이루느니라','로마서 8:28'],
+ ['마음을 강하게 하고 담대히 하라 두려워 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라','여호수아 1:9']
+];
+
+const $=id=>document.getElementById(id);
+const won=n=>n.toLocaleString('ko-KR');
+let S,busy=false,reading=false,vIdx=Math.floor(Math.random()*VERSES.length);
+function fresh(){return{lv:0,p:0,pr:0,best:0,fails:0,clears:0,slips:0,seen:false}}
+function save(){try{localStorage.setItem("elder-luck",JSON.stringify(S))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem("elder-luck"));if(s&&"lv" in s)return s}catch(e){}return null}
+
+$("logo").innerHTML=churchSVG();$("bIcon").innerHTML=bookSVG();$("vIcon").innerHTML=bookSVG();$("devil").innerHTML=devilSVG();
+(function(){const cs=[YEL,W,RED,TEAL];let h="";for(let i=0;i<12;i++){h+=`<i style="left:${Math.random()*95}%;font-size:${10+Math.random()*12}px;color:${cs[i%4]};-webkit-text-stroke:1px ${K};animation-duration:${5+Math.random()*6}s;animation-delay:${-Math.random()*10}s">✦</i>`}$("dots").innerHTML=h})();
+
+let heroLv=-1;
+function render(){
+ const g=ST[S.lv];
+ if(heroLv!==S.lv){
+  const first=heroLv<0;heroLv=S.lv;
+  $("scene").style.backgroundColor=g.bg;$("place").textContent=g.place;
+  $("hero").innerHTML=avatar(S.lv);
+  $("decos").innerHTML=g.deco.map((d,i)=>{const[t,x,y,c]=d.split("|");return`<span class="deco" style="left:${x};top:${y};animation-delay:${-i*0.8}s;animation-duration:${2.8+i*0.5}s">${doodle(t,c)}</span>`}).join("");
+  if(!first){const sc=$("scene");sc.classList.remove("enter");void sc.offsetWidth;sc.classList.add("enter")}
+ }
+ $("lv").textContent="LV."+(S.lv+1);
+ $("nm").innerHTML=`${g.name}<small>${g.place}</small>`;
+ $("pts").textContent=won(S.p)+"원";
+ const last=S.lv>=ST.length-1;
+ $("need").textContent=last?"승급 완료!":`다음 직분까지 ${won(Math.max(0,g.need-S.p))}원`;
+ $("bar").style.width=last?"100%":Math.min(100,S.p/g.need*100)+"%";
+ $("stg").textContent=last?"최고 직분 달성!":`다음: ${ST[S.lv+1].name}`;
+ $("rate").textContent=last?"":`승급 확률 ${Math.round(g.rate*100)}%`;
+ $("best").textContent=ST[S.best].name;
+ $("fails").textContent=S.fails;$("slips").textContent=S.slips||0;$("clears").textContent=S.clears;
+ const pr=S.pr||0,ready=pr>=7;
+ $("beads").className="beads"+(ready?" full":"");
+ $("beads").innerHTML=Array.from({length:7},(_,i)=>`<i class="${i<pr?"on":""}"></i>`).join("");
+ const t=$("touch");t.className="touch "+(ready?"ready":"pray");
+ t.innerHTML=ready?"헌금하기!":`기도하기 <small>${pr}/7</small>`;
+ t.disabled=busy||last;
+ $("bible").disabled=busy||reading||last;
+}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function cap(t){const c=$("cap");c.textContent=t;c.classList.remove("new");void c.offsetWidth;c.classList.add("new")}
+function anim(cls){const h=$("hero");h.className="hero";void h.offsetWidth;if(cls)h.classList.add(cls)}
+function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+function floatText(t,x,y){const f=document.createElement("div");f.className="float";f.textContent=t;f.style.left=x+"px";f.style.top=y+"px";$("scene").appendChild(f);setTimeout(()=>f.remove(),900)}
+function modal(h){$("box").innerHTML=h;$("modal").classList.add("on")}
+function shut(){$("modal").classList.remove("on")}
+function coins(n){
+ const sc=$("scene"),r=sc.getBoundingClientRect();
+ for(let i=0;i<n;i++){
+  const c=document.createElement("div");c.className="coin";c.textContent="₩";
+  c.style.left=(r.width/2-13)+"px";c.style.top=(r.height*.5)+"px";
+  c.style.setProperty("--dx",(Math.random()*170-85)+"px");c.style.animationDelay=(i*0.05)+"s";
+  sc.appendChild(c);setTimeout(()=>c.remove(),1100);
+ }
+ const p=$("pts");p.classList.remove("pop");void p.offsetWidth;p.classList.add("pop");
+}
+function confetti(){
+ const cols=[YEL,RED,TEAL,W];
+ for(let i=0;i<40;i++){
+  const c=document.createElement("div");c.className="confetti";
+  c.style.left=Math.random()*100+"vw";c.style.background=cols[i%cols.length];
+  c.style.animationDuration=(1.8+Math.random()*1.6)+"s";c.style.animationDelay=(Math.random()*.5)+"s";
+  document.body.appendChild(c);setTimeout(()=>c.remove(),4200);
+ }
+}
+
+function give(add,label){
+ const g=ST[S.lv];
+ S.p+=add;coins(add>=7000?6:3);
+ const r=$("scene").getBoundingClientRect();
+ floatText((label||"+")+won(add)+"원",r.width/2-40+(Math.random()*100-50),40+Math.random()*30);
+ if(S.p>=g.need){S.p=g.need;save();render();challenge();return}
+ save();render();
+}
+// 실족: 사탄의 속삭임
+const SLIPS=["오늘 하루쯤은 늦잠 자도 괜찮아…","설교 시간인데 잠깐 눈 좀 붙여…","저 자리는 원래 네 주차 자리잖아…","저 사람 흉 좀 봐도 아무도 몰라…","오늘 반찬 너무 별로지 않아?","약속 있으니 예배는 다음 주에…","헌금은 다음에 내도 돼…","단톡방에 한마디 쏘아붙여…"];
+// 기도하다가 실족: 회사·가족과의 불화 (30대 후반)
+const PRAY_SLIPS=["팀장님 좀 다른 부서로 보내 달라고 기도해…","팀장님은 너만 미워하는 거야…","부장님 얼굴 떠올리니 기도가 안 나오지?","후배가 먼저 승진했는데 배 아프지?","배우자가 먼저 잘못했잖아, 용서는 무슨…","처가·시댁 얘기만 나오면 속 터지지?","이 나이에 부모님 잔소리, 또 들어야 해?","애들한테 버럭해도 오늘은 괜찮아…"];
+let slipT;
+function stumble(praying){
+ let loss;
+ if(praying){
+  loss=S.p>=1000?Math.round(S.p*(.1+Math.random()*.15)/100)*100:0;
+  S.pr=0;
+ }else loss=Math.max(100,Math.round(S.p*(.3+Math.random()*.3)/100)*100);
+ S.p=Math.max(0,S.p-loss);S.slips=(S.slips||0)+1;
+ anim("sad");buzz([200,80,200]);
+ cap(praying?"기도하다가 마음이 흔들렸어요…":"사탄의 속삭임에 넘어갔다…");
+ $("sWhisper").textContent="“"+pick(praying?PRAY_SLIPS:SLIPS)+"”";
+ $("sLoss").textContent=praying?(loss?"-"+won(loss)+"원 · 기도 0/7":"기도 0/7로 초기화"):"-"+won(loss)+"원";
+ const el=$("slip");el.classList.add("on");clearTimeout(slipT);slipT=setTimeout(()=>el.classList.remove("on"),2000);
+ save();render();
+}
+const PRAYERS=["감사 기도를 드려요","가족을 위해 기도해요","교회를 위해 기도해요","나라를 위해 기도해요","회개 기도를 드려요","아픈 이웃을 위해 기도해요","새가족을 위해 기도해요"];
+function touch(){
+ if(busy||S.lv>=ST.length-1)return;
+ S.pr=S.pr||0;
+ if(S.pr<7){
+  if(S.pr>=2&&Math.random()<0.04+S.lv*0.01)return stumble(true);
+  S.pr++;anim("tap");buzz(10);
+  const r=$("scene").getBoundingClientRect();
+  floatText("기도 "+S.pr+"/7",r.width/2-30+(Math.random()*80-40),50+Math.random()*30);
+  cap(S.pr>=7?"기도 완료! 이제 헌금해요":pick(PRAYERS));
+  save();render();return;
+ }
+ S.pr=0;
+ if(S.p>=1000&&Math.random()<0.12+S.lv*0.02)return stumble();
+ anim("tap");buzz(25);cap(pick(ST[S.lv].lines));
+ give((30+Math.floor(Math.random()*71))*100);
+}
+function bible(){
+ if(busy||reading||S.lv>=ST.length-1)return;
+ reading=true;render();
+ const [t,r]=VERSES[vIdx++%VERSES.length];
+ $("vText").textContent=t;$("vRef").textContent=r+" (개역한글)";
+ const bar=$("vBar");bar.style.transition='none';bar.style.width='100%';void bar.offsetWidth;
+ bar.style.transition='width 5s linear';bar.style.width='0%';
+ $("verse").classList.add("on");
+ setTimeout(()=>{
+  $("verse").classList.remove("on");reading=false;
+  cap("말씀으로 은혜받았어요!");give(3000,"말씀 보너스 +");
+ },5000);
+}
+function challenge(){
+ busy=true;render();
+ const g=ST[S.lv];
+ cap("승급 심사 중… 두근두근");anim("shake");buzz([30,60,30,60,30]);
+ setTimeout(()=>{
+  if(Math.random()<g.rate){
+   S.lv++;S.p=0;S.best=Math.max(S.best,S.lv);
+   render();anim("glow");buzz(200);confetti();
+   const n=ST[S.lv];
+   if(S.lv>=ST.length-1){S.clears++;save();render();return ending()}
+   cap("승급 성공!");
+   modal(`<div class="mini">${avatar(S.lv)}</div><div class="ribbon">축하해요!</div><p><b>${n.name}</b>(으)로 승급했어요!</p><p>장소: ${n.place}</p><span class="chance">다음 승급 확률 ${Math.round(n.rate*100)}%</span><button class="ok" id="ok">계속 헌금!</button>`);
+  }else{
+   const from=g;
+   anim("sad");buzz([300]);
+   S.fails++;S.lv=0;S.p=0;
+   setTimeout(()=>{render();cap("앗… 다시 새가족부터")},400);
+   modal(`<div class="big">${devilSVG()}</div><div class="ribbon r">앗! 도루묵…</div><p>${from.name}에서 아쉽게 실패!<br>다시 새가족부터 시작해요.</p><p style="font-size:16px;color:#666">괜찮아요, 다시 하면 돼요!</p><button class="ok" id="ok">다시 도전</button>`);
+  }
+  $("ok").onclick=()=>{shut();busy=false;save();render()};
+  save();
+ },1400);
+}
+function ending(){
+ modal(`<div class="mini">${avatar(4)}</div><div class="ribbon">장로 장립 축하!</div><p>새가족으로 시작해 드디어 장로가 되었어요.</p><div class="qv">잘하였도다 착하고 충성된 종아 네가 작은 일에 충성하였으매 많은 것으로 네게 맡기리니 (마 25:21)</div><p>도루묵 ${S.fails}번, 실족 ${S.slips||0}번을 이겨내고 완주!</p><button class="ok" id="ok">처음부터 다시</button>`);
+ $("ok").onclick=()=>{shut();S.lv=0;S.p=0;busy=false;save();render();cap("다시 새가족실에서 시작해요")};
+}
+function help(){
+ modal(`<div class="big">${churchSVG()}</div><div class="ribbon">이렇게 놀아요</div><p><b>기도하기</b>를 7번 하면 <b>헌금하기</b> 버튼이 열려요. 헌금 1번에 3,000~10,000원!</p><p><b>성경 읽기</b>를 누르면 말씀이 5초 동안 나오고, 다 읽으면 보너스 3,000원!</p><p>기도하다가도, 헌금하다가도 <b>사탄의 속삭임</b>에 넘어가 실족할 수 있어요! 회사·가족과의 불화를 조심하세요.</p><p>게이지가 다 차면 <b>자동 승급 도전!</b> 실패하면 <b>도루묵</b>(새가족부터 다시)!</p><button class="ok" id="ok">시작!</button>`);
+ $("ok").onclick=()=>shut();
+}
+$("touch").onclick=touch;$("hero").onclick=touch;$("bible").onclick=bible;$("help").onclick=help;
+S=load()||fresh();busy=false;render();
+cap(S.lv>=ST.length-1?ST[S.lv].lines[0]:pick(ST[S.lv].lines));
+if(S.lv>=ST.length-1)ending();
+else if(!S.seen){S.seen=true;save();help()}
+</script>
+</body>
+</html>
